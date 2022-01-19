@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  billing_ms:
+    image: 'billing_ms:latest'
+    build:
+      context: .
+    container_name: billing_ms
+    restart: always
+    depends_on:
+      - billing_db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://billing_db/billingdb?useSSL=false
+      - SPRING_DATASOURCE_USERNAME=userbilling
+      - SPRING_DATASOURCE_PASSWORD=12345
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL57Dialect
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
+    ports:
+      - 8081:8080
+          
+  billing_db:
+    image: 'mysql:5.7'
+    container_name: billing_db
+	restart: always
+    environment:  
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_USER=userbilling
+      - MYSQL_DATABASE=billingdb
+      - MYSQL_PASSWORD=12345
+    ports:
+      - '3307:3306'

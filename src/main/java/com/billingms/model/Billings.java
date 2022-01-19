@@ -1,31 +1,54 @@
 package com.billingms.model;
 
 
+import java.util.Calendar;
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 public class Billings {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
 	@Column(name = "user_id")
 	private long user_id;
 
-	@OneToMany(mappedBy = "billings")
-    private List<Billing_Line_items> billing_line_items;
-    
-    @OneToMany(mappedBy = "billings")
+	@Column(name = "status", nullable = false)
+    private String status;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "REGIST_DATE", nullable = false)
+    private Calendar registDate;
+
+	@OneToMany(cascade = CascadeType.ALL)
+    private List<Line_items> line_items;
+
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Payment> payment;
 
-	public Billings(long id, long user_id, List<Billing_Line_items> billing_line_items, List<Payment> payment) {
+
+	public Billings() {
+	}
+
+	public Billings(long id, long user_id, String status, Calendar registDate, List<Line_items> line_items,
+			List<Payment> payment) {
 		super();
 		this.id = id;
 		this.user_id = user_id;
-		this.billing_line_items = billing_line_items;
+		this.status = status;
+		this.registDate = registDate;
+		this.line_items = line_items;
 		this.payment = payment;
 	}
 
@@ -45,12 +68,28 @@ public class Billings {
 		this.user_id = user_id;
 	}
 
-	public List<Billing_Line_items> getBilling_line_items() {
-		return billing_line_items;
+	public String getStatus() {
+		return status;
 	}
 
-	public void setBilling_line_items(List<Billing_Line_items> billing_line_items) {
-		this.billing_line_items = billing_line_items;
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Calendar getRegistDate() {
+		return registDate;
+	}
+
+	public void setRegistDate(Calendar registDate) {
+		this.registDate = registDate;
+	}
+
+	public List<Line_items> getLine_items() {
+		return line_items;
+	}
+
+	public void setLine_items(List<Line_items> line_items) {
+		this.line_items = line_items;
 	}
 
 	public List<Payment> getPayment() {
@@ -61,6 +100,5 @@ public class Billings {
 		this.payment = payment;
 	}
 
-    
 
 }

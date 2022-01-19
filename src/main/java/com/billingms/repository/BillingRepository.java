@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import com.billingms.model.Billings;
 
-import java.util.List;
 
 @Repository
 public interface BillingRepository extends JpaRepository<Billings, Long> {

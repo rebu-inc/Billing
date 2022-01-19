@@ -1,12 +1,10 @@
 package com.billingms.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,13 +23,13 @@ public class BillingController {
 	@Autowired
 	BillingRepository billingRepository;
 
-	@GetMapping("/billings")
+	@GetMapping("/listbilling")
 	public List<Billings> Get() {
 		return billingRepository.findAll();
 	}
 
-	@DeleteMapping("/billings/{id}")
-	public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable("id") long id) {
+	@DeleteMapping("/deletebilling/{id}")
+	public ResponseEntity<HttpStatus> deleteBilling(@PathVariable("id") long id) {
 		try {
 			billingRepository.deleteById(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -40,13 +38,22 @@ public class BillingController {
 		}
 	}
 
-	@PostMapping("/billings")
-	public ResponseEntity<Billings> postStudent(@RequestBody Billings biliings) {
-		billingRepository.save(biliings);
+	@GetMapping("/billing/{id}")
+	public ResponseEntity<Billings> getBilling(@PathVariable("id") long id) {
 		try {
-			Billings _biliings = billingRepository
-					.save(biliings);
-			return new ResponseEntity<>(_biliings, HttpStatus.CREATED);
+			Billings _billing = billingRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid billing Id:" + id));
+			return new ResponseEntity<>(_billing, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@PostMapping("/billing")
+	public ResponseEntity<Billings> postBilling(@RequestBody Billings billings) {
+		//billingRepository.save(billings);
+		try {
+			Billings _billings = billingRepository.save(billings);
+			return new ResponseEntity<>(_billings, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
