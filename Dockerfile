@@ -3,12 +3,16 @@
 #COPY ${JAR_FILE} billing_ms-0.0.1-SNAPSHOT.jar
 #ENTRYPOINT ["java","-jar","/billing_ms-0.0.1-SNAPSHOT.jar"]
 
-FROM maven:3.6.3-jdk-11-slim as build 
+FROM maven:3.6.3-jdk-11-slim AS build
 WORKDIR /app
-COPY --from=clone /app/billing_ms /app 
-RUN mvn install
+COPY pom.xml .
+COPY src ./src
 
-FROM openjdk:11
-WORKDIR /app
-COPY --from=build /app/target/billing_ms-0.0.1-SNAPSHOT.jar /app
-CMD ["java -jar billing_ms-0.0.1-SNAPSHOT.jar"]
+RUN mvn clean package -DskipTests
+ 
+ 
+FROM adoptopenjdk/openjdk11:jre-11.0.9.1_1-alpine
+#RUN mkdir /app
+COPY --from=build /project/target/billing_ms-*.jar /app/billing_ms-0.0.1-SNAPSHOT.jar
+#WORKDIR /app
+CMD "java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/billing_ms-0.0.1-SNAPSHOT.jar"
